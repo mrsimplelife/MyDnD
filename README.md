@@ -1,46 +1,35 @@
-# Getting Started with Create React App
+# **MyDnD**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+https://github.com/mrsimplelife/MyDnD/assets/22779951/75851fbe-2dae-4cf7-b7cd-f85bd5fad50e
 
-## Available Scripts
+간단하고 빠른 드래그 앤 드롭 리스트 애플리케이션입니다.
 
-In the project directory, you can run:
+## **특징**
 
-### `yarn start`
+- 천개 이상의 아이템도 부드럽게 드래그 앤 드롭할 수 있습니다.
+- 리액트로 만들어져 있어 확장성이 뛰어납니다.
+- 사용자 친화적인 디자인 및 반응형 레이아웃을 갖추고 있습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## **설치 방법**
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+bashCopy code
+git clone https://github.com/mrsimplelife/MyDnD.git
+cd MyDnD
+yarn
+yarn start
+```
 
-### `yarn test`
+브라우저에서 **`http://localhost:3000`** 주소를 방문하여 앱을 확인합니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## **기여 방법**
 
-### `yarn build`
+1. 프로젝트를 포크합니다.
+2. 새로운 피처 브랜치를 만듭니다 (**`git checkout -b feature/NewFeature`**)
+3. 변경 사항을 커밋합니다 (**`git commit -am 'Add new feature'`**)
+4. 브랜치를 GitHub에 푸시합니다 (**`git push origin feature/NewFeature`**)
+5. 새로운 Pull Request를 작성합니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## **라이선스**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+MIT 라이선스 하에 라이선스됩니다. 자세한 내용은 **`LICENSE`** 파일을 참고하십시오.
