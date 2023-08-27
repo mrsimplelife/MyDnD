@@ -1,13 +1,9 @@
 import { CSSProperties, DragEvent, PropsWithChildren, memo, useCallback, useState } from 'react';
 
-const initialItems = [
-  { id: 1, content: '아이템 1' },
-  { id: 2, content: '아이템 2' },
-  { id: 3, content: '아이템 3' },
-  { id: 4, content: '아이템 4' },
-  { id: 5, content: '아이템 5' },
-  { id: 6, content: '아이템 6' },
-];
+const initialItems = Array.from({ length: 1000 }).map((_, i) => ({
+  id: i + 1,
+  content: `아이템 ${i + 1}`,
+}));
 
 function App() {
   const [items, setItems] = useState(initialItems);
@@ -26,25 +22,31 @@ function App() {
 
   return (
     <div>
-      {items.map((item, index) => {
-        if (index === 4) console.log(item, index);
-        return (
-          <DraggableItem
-            key={item.id}
-            index={index}
-            handleDragStart={handleDragStart}
-            handleDragOver={handleDragOver}
-            handleDrop={handleDrop}
-            handleDragEnd={handleDragEnd}
-            getStyle={getStyle}
-          >
-            {item.content}
-          </DraggableItem>
-        );
-      })}
+      {items.map((item, index) => (
+        <DraggableItem
+          key={item.id}
+          index={index}
+          handleDragStart={handleDragStart}
+          handleDragOver={handleDragOver}
+          handleDrop={handleDrop}
+          handleDragEnd={handleDragEnd}
+          getStyle={getStyle}
+        >
+          <div style={baseStyle2}>{item.content}</div>
+        </DraggableItem>
+      ))}
     </div>
   );
 }
+const baseStyle2: CSSProperties = {
+  padding: '10px 20px',
+  margin: '5px 0',
+  border: '1px solid #e0e0e0',
+  borderRadius: '5px',
+  backgroundColor: '#f5f5f5',
+  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+  transition: 'background-color 0.3s ease',
+};
 
 export default App;
 
