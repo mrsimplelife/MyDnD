@@ -13,7 +13,6 @@ https://github.com/mrsimplelife/MyDnD/assets/22779951/75851fbe-2dae-4cf7-b7cd-f8
 ## **설치 방법**
 
 ```bash
-bashCopy code
 git clone https://github.com/mrsimplelife/MyDnD.git
 cd MyDnD
 yarn
