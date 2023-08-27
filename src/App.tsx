@@ -1,4 +1,4 @@
-import { CSSProperties, DragEvent, useState } from 'react';
+import { CSSProperties, DragEvent, PropsWithChildren, memo, useCallback, useState } from 'react';
 
 const initialItems = [
   { id: 1, content: '아이템 1' },
@@ -11,117 +11,35 @@ const initialItems = [
 
 function App() {
   const [items, setItems] = useState(initialItems);
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [overIndex, setOverIndex] = useState<number | null>(null);
+  const handleSort = useCallback(
+    (index: number, change: number) => {
+      const newItems = [...items];
+      const draggingItem = newItems[index];
+      newItems.splice(index, 1);
+      newItems.splice(change, 0, draggingItem);
+      setItems(newItems);
+    },
+    [items]
+  );
 
-  const handleDragStart = (e: DragEvent, index: number) => {
-    setDraggingIndex(index);
-    console.log('handleDragStart', index);
-  };
-
-  const handleDragOver = (e: DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggingIndex === null) return;
-    if (overIndex === index) return;
-    setOverIndex(index);
-    console.log('handleDragOver', index);
-  };
-
-  const handleDrop = (e: DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggingIndex === null || overIndex === null) return;
-    const newItems = [...items];
-    const draggingItem = newItems[draggingIndex];
-    newItems.splice(draggingIndex, 1);
-    newItems.splice(overIndex, 0, draggingItem);
-    setItems(newItems);
-    setDraggingIndex(null);
-    setOverIndex(null);
-    console.log('handleDrop', index);
-  };
-
-  const handleDragEnd = (index: number | null) => {
-    setDraggingIndex(null);
-    setOverIndex(null);
-    console.log('handleDragEnd', index);
-  };
-
-  const getStyle = (index: number): CSSProperties => {
-    if (draggingIndex === null || overIndex === null) return {};
-    if (index === draggingIndex) return { opacity: 0 };
-    // if (index === overIndex) return { backgroundColor: 'lightgreen' };
-    if (draggingIndex < overIndex && index > draggingIndex && index <= overIndex) {
-      return { transform: 'translateY(-100%)' };
-    }
-    if (draggingIndex > overIndex && index < draggingIndex && index >= overIndex) {
-      return { transform: 'translateY(100%)' };
-    }
-    return {};
-  };
+  const { handleDragStart, handleDragOver, handleDrop, handleDragEnd, getStyle } = useDrag(handleSort);
 
   return (
-    <div className='App'>
+    <div>
       {items.map((item, index) => {
+        if (index === 4) console.log(item, index);
         return (
-          <div
+          <DraggableItem
             key={item.id}
-            draggable
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={() => handleDragEnd(index)}
-            style={{
-              position: 'relative',
-              transition: 'all 0.3s ease',
-              ...getStyle(index),
-            }}
+            index={index}
+            handleDragStart={handleDragStart}
+            handleDragOver={handleDragOver}
+            handleDrop={handleDrop}
+            handleDragEnd={handleDragEnd}
+            getStyle={getStyle}
           >
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '1rem',
-                right: '1rem',
-                bottom: 0,
-                border: '1px solid black',
-                padding: '1rem',
-                cursor: 'move',
-                transition: 'transform 0.3s ease',
-                transform: draggingIndex !== null && overIndex !== null && index > draggingIndex && index === overIndex ? 'translateY(-100%)' : 'translateY(0)',
-                opacity: draggingIndex !== null && overIndex !== null && index > draggingIndex && index === overIndex ? 1 : 0,
-              }}
-            >
-              {item.content}
-            </div>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '1rem',
-                right: '1rem',
-                bottom: 0,
-                border: '1px solid black',
-                padding: '1rem',
-                cursor: 'move',
-                transition: 'transform 0.3s ease',
-                transform: draggingIndex !== null && overIndex !== null && index < draggingIndex && index === overIndex ? 'translateY(100%)' : 'translateY(0)',
-                opacity: draggingIndex !== null && overIndex !== null && index < draggingIndex && index === overIndex ? 1 : 0,
-              }}
-            >
-              {item.content}
-            </div>
-            <div
-              style={{
-                margin: '1rem',
-                border: '1px solid black',
-                padding: '1rem',
-                cursor: 'move',
-                opacity: overIndex !== null && index === overIndex ? 0 : 1,
-              }}
-            >
-              {item.content}
-            </div>
-          </div>
+            {item.content}
+          </DraggableItem>
         );
       })}
     </div>
@@ -130,8 +48,76 @@ function App() {
 
 export default App;
 
-// handleDragStart
-// handleDragOver
-// handleDragOver
-// handleDrop
-// handleDragEnd
+type DraggableItemProps = {
+  index: number;
+  children: React.ReactNode;
+} & ReturnType<typeof useDrag>;
+
+const DraggableItem = memo(
+  ({ index, children, getStyle, handleDragEnd, handleDragOver, handleDragStart, handleDrop }: PropsWithChildren<DraggableItemProps>) => {
+    return (
+      <div
+        draggable
+        onDragStart={() => handleDragStart(index)}
+        onDragOver={(e) => handleDragOver(e, index)}
+        onDrop={(e) => handleDrop(e)}
+        onDragEnd={handleDragEnd}
+        style={{ position: 'relative' }}
+      >
+        <div style={{ ...baseStyle, ...getStyle(index) }}>{children}</div>
+      </div>
+    );
+  }
+);
+
+const baseStyle: CSSProperties = {
+  cursor: 'move',
+};
+
+function useDrag(onDrop: (index: number, change: number) => void) {
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+  const handleDragStart = useCallback((index: number) => {
+    setDraggingIndex(index);
+  }, []);
+
+  const handleDragOver = useCallback(
+    (e: DragEvent, index: number) => {
+      e.preventDefault();
+      if (draggingIndex === null || overIndex === index) return;
+      setOverIndex(index);
+    },
+    [draggingIndex, overIndex]
+  );
+
+  const handleDrop = useCallback(
+    (e: DragEvent) => {
+      e.preventDefault();
+      if (draggingIndex === null || overIndex === null) return;
+      onDrop(draggingIndex, overIndex);
+      setDraggingIndex(null);
+      setOverIndex(null);
+    },
+    [draggingIndex, onDrop, overIndex]
+  );
+
+  const handleDragEnd = useCallback(() => {
+    setDraggingIndex(null);
+    setOverIndex(null);
+  }, []);
+
+  const getStyle = (index: number): CSSProperties => {
+    if (draggingIndex === null || overIndex === null) return {};
+    if (index === draggingIndex) return { opacity: 0 };
+    if (draggingIndex > overIndex && index < draggingIndex && index >= overIndex) {
+      return { transition: 'transform 0.3s ease', transform: 'translateY(100%)' };
+    }
+    if (draggingIndex < overIndex && index > draggingIndex && index <= overIndex) {
+      return { transition: 'transform 0.3s ease', transform: 'translateY(-100%)' };
+    }
+
+    return { transition: 'transform 0.3s ease' };
+  };
+
+  return { handleDragStart, handleDragOver, handleDrop, handleDragEnd, getStyle };
+}
